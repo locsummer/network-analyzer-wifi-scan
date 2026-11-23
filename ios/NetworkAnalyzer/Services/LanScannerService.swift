@@ -78,11 +78,13 @@ class LanScannerService {
         }
         
         let startTime = CFAbsoluteTimeGetCurrent()
-        let isReachable = await checkTCPConnectivity(host: ip, port: 80, timeout: 0.3)
-            || await checkTCPConnectivity(host: ip, port: 443, timeout: 0.3)
-            || await checkTCPConnectivity(host: ip, port: 445, timeout: 0.3)
-            || await checkTCPConnectivity(host: ip, port: 8080, timeout: 0.3)
-            || await checkTCPConnectivity(host: ip, port: 5357, timeout: 0.3)
+        var isReachable = false
+        for port: UInt16 in [80, 443, 445, 8080, 5357] {
+            if await checkTCPConnectivity(host: ip, port: port, timeout: 0.3) {
+                isReachable = true
+                break
+            }
+        }
         
         if isReachable || isGateway {
             let rtt = max(1.0, (CFAbsoluteTimeGetCurrent() - startTime) * 1000)
