@@ -32,10 +32,17 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            BUILD_DIR="${{ github.workspace }}/build" 2>&1 | tee ../build.log
+            BUILD_DIR="${{ github.workspace }}/build" > ../build.log 2>&1 || (cat ../build.log | tail -n 120 && exit 1)
 
       - name: Package to IPA
         run: |
+          echo "Checking build directory..."
+          ls -la "${{ github.workspace }}/build/Release-iphoneos"
+          ls -la "${{ github.workspace }}/build/Release-iphoneos/NetworkAnalyzer.app"
+          if [ ! -f "${{ github.workspace }}/build/Release-iphoneos/NetworkAnalyzer.app/NetworkAnalyzer" ]; then
+            echo "Error: NetworkAnalyzer executable binary not found!"
+            exit 1
+          fi
           mkdir -p package/Payload
           cp -r "${{ github.workspace }}/build/Release-iphoneos/NetworkAnalyzer.app" package/Payload/
           cd package
