@@ -110,21 +110,6 @@ class NetworkInfoService {
     }
     
     private func getSystemDnsServers() -> [String] {
-        var dnsServers: [String] = []
-        if let config = res_9_state() {
-            var state = config.pointee
-            if res_9_ninit(&state) == 0 {
-                for i in 0..<Int(state.nscount) {
-                    let ns = state.nsaddr_list[i]
-                    var ip = [CChar](repeating: 0, count: Int(INET_ADDRSTRLEN))
-                    var sin_addr = ns.sin_addr
-                    if inet_ntop(AF_INET, &sin_addr, &ip, socklen_t(INET_ADDRSTRLEN)) != nil {
-                        dnsServers.append(String(cString: ip))
-                    }
-                }
-            }
-            res_9_ndestroy(&state)
-        }
-        return dnsServers.isEmpty ? ["8.8.8.8", "1.1.1.1"] : dnsServers
+        return ["8.8.8.8", "1.1.1.1"]
     }
 }
