@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Build NetworkAnalyzer App
         run: |
@@ -29,24 +31,22 @@ jobs:
             -configuration Release \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="" \
-            BUILD_DIR="build"
+            BUILD_DIR="${{ github.workspace }}/build" 2>&1 | tee ../build.log
 
       - name: Package to IPA
         run: |
-          cd ios
           mkdir -p package/Payload
-          cp -r build/Release-iphoneos/NetworkAnalyzer.app package/Payload/
+          cp -r "${{ github.workspace }}/build/Release-iphoneos/NetworkAnalyzer.app" package/Payload/
           cd package
-          zip -r ../NetworkAnalyzer.ipa Payload
+          zip -r "${{ github.workspace }}/NetworkAnalyzer.ipa" Payload
           cd ..
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: NetworkAnalyzer-iOS-IPA
-          path: ios/NetworkAnalyzer.ipa
+          path: NetworkAnalyzer.ipa
           retention-days: 14
 
       - name: Release IPA
@@ -55,6 +55,17 @@ jobs:
         with:
           tag_name: v1.0.1
           name: "Network Analyzer iOS v1.0.1 (IPA)"
-          files: ios/NetworkAnalyzer.ipa
+          files: NetworkAnalyzer.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Save Log on Failure
+        if: failure()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B build-log
+          cp build.log failure.log 2>/dev/null || true
+          git add failure.log
+          git commit -m "ci: save build failure log" || true
+          git push origin build-log --force || true
