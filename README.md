@@ -50,9 +50,17 @@ d:\abc\
 
 ### 2. Chạy trên Xcode (Dự án iOS)
 1. Trên máy macOS, mở ứng dụng **Xcode**.
-2. Chọn **File** > **Open...** và chọn file `d:\abc\ios\NetworkAnalyzer.xcodeproj`.
+2. Chọn **File** > **Open...** và chọn file `ios/NetworkAnalyzer.xcodeproj`.
 3. Chọn Simulator (ví dụ iPhone 15/16 Pro) hoặc thiết bị iPhone thực tế.
 4. Nhấn nút **Run ▶** (Cmd + R) để biên dịch và trải nghiệm ứng dụng.
+
+### 3. Build file IPA và cài đặt qua Sideloadly & iTunes (Không cần máy Mac)
+1. Dự án đã được tích hợp sẵn CI/CD GitHub Actions tại `.github/workflows/build-ios.yml` tự động build ra file `NetworkAnalyzer.ipa` trên máy ảo macOS của GitHub.
+2. Truy cập tab **Actions** trên GitHub repository: `https://github.com/locsummer/network-analyzer-wifi-scan/actions`
+3. Chọn workflow **Build iOS IPA** và tải về file `NetworkAnalyzer-iOS-IPA`.
+4. Mở **Sideloadly**, cắm iPhone vào máy tính và mở **iTunes** (chọn Tin cậy máy tính).
+5. Kéo thả file `NetworkAnalyzer.ipa` vào Sideloadly, nhập Apple ID và nhấn **Start**.
+6. Trên iPhone: Vào **Cài đặt > Cài đặt chung > Quản lý VPN & Thiết bị** > Tin cậy Apple ID để khởi chạy app.
 
 ---
 
