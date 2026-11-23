@@ -10,7 +10,7 @@ enum ConnectionType: String {
 struct NetworkSummary {
     var connectionType: ConnectionType = .none
     var interfaceName: String = "-"
-    var isConnected: BooleanLiteralType = false
+    var isConnected: Bool = false
     
     // Wi-Fi Details
     var wifiSsid: String = "-"

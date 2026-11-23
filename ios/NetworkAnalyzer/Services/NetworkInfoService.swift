@@ -1,6 +1,7 @@
 import Foundation
 import Network
 import SystemConfiguration.CaptiveNetwork
+import Darwin
 
 class NetworkInfoService {
     

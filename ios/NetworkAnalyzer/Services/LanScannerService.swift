@@ -141,7 +141,7 @@ class LanScannerService {
         var hostBuffer = [CChar](repeating: 0, count: Int(NI_MAXHOST))
         var socketAddress = sockaddr_in()
         socketAddress.sin_family = sa_family_t(AF_INET)
-        socketAddress.sin_len = __uint8_t(MemoryLayout<sockaddr_in>.size)
+        socketAddress.sin_len = UInt8(MemoryLayout<sockaddr_in>.size)
         inet_pton(AF_INET, ip, &socketAddress.sin_addr)
         
         let result = withUnsafePointer(to: &socketAddress) {

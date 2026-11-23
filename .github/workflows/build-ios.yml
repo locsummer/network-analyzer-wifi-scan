@@ -22,7 +22,6 @@ jobs:
       - name: Build NetworkAnalyzer App
         run: |
           cd ios
-          set -o pipefail
           xcodebuild clean build \
             -project NetworkAnalyzer.xcodeproj \
             -scheme NetworkAnalyzer \
@@ -32,7 +31,7 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="" \
-            BUILD_DIR="build" 2>&1 | tee xcodebuild.log || (tail -n 80 xcodebuild.log && exit 1)
+            BUILD_DIR="build"
 
       - name: Package to IPA
         run: |
@@ -54,16 +53,8 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: success()
         with:
-          tag_name: v1.0.0
-          name: "Network Analyzer iOS v1.0.0 (IPA)"
+          tag_name: v1.0.1
+          name: "Network Analyzer iOS v1.0.1 (IPA)"
           files: ios/NetworkAnalyzer.ipa
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Build Log on Failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: xcodebuild-log
-          path: ios/xcodebuild.log
-          retention-days: 7
