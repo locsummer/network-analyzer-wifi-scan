@@ -1,0 +1,69 @@
+name: Build iOS IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - 'ios/**'
+      - '.github/workflows/build-ios.yml'
+
+jobs:
+  build:
+    name: Build NetworkAnalyzer iOS App
+    runs-on: macos-14
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Select Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
+      - name: Build App with Xcode
+        run: |
+          cd ios
+          xcodebuild clean build \
+            -project NetworkAnalyzer.xcodeproj \
+            -scheme NetworkAnalyzer \
+            -destination "generic/platform=iOS" \
+            -configuration Release \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            BUILD_DIR="../build"
+
+      - name: Package to IPA
+        run: |
+          mkdir -p package/Payload
+          cp -r build/Release-iphoneos/NetworkAnalyzer.app package/Payload/
+          cd package
+          zip -r ../NetworkAnalyzer.ipa Payload
+          cd ..
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NetworkAnalyzer-iOS-IPA
+          path: NetworkAnalyzer.ipa
+          retention-days: 30
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+        with:
+          tag_name: v1.0.0-ios
+          name: "Network Analyzer iOS v1.0.0 (IPA for Sideloadly)"
+          files: NetworkAnalyzer.ipa
+          body: |
+            ## 📱 Network Analyzer iOS (IPA)
+            - File IPA được build tự động không ký chữ ký điện tử (`CODE_SIGNING_ALLOWED=NO`).
+            - Tương thích trực tiếp với **Sideloadly** và **iTunes** để tự động ký bằng tài khoản Apple ID cá nhân và cài lên iPhone/iPad.
+            - Hỗ trợ iOS 16.0 trở lên.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

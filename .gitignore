@@ -1,0 +1,38 @@
+# Gradle & Android
+.gradle/
+build/
+app/build/
+android/.gradle/
+android/app/build/
+android/local.properties
+android/captures/
+*.apk
+*.aab
+*.ap_
+
+# iOS & Xcode
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
