@@ -50,7 +50,7 @@ jobs:
 
       - name: Release IPA
         uses: softprops/action-gh-release@v2
-        if: always()
+        if: success()
         with:
           tag_name: v1.0.0
           name: "Network Analyzer iOS v1.0.0 (IPA)"

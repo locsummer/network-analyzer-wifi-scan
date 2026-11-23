@@ -69,7 +69,7 @@ class LanScannerService {
                 ipAddress: ip,
                 macAddress: "This iPhone / iPad",
                 vendor: "Apple, Inc.",
-                hostname = "localhost",
+                hostname: "localhost",
                 responseTimeMs: 1,
                 isGateway: false,
                 isLocalDevice: true
